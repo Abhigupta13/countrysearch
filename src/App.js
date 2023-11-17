@@ -1,6 +1,5 @@
 import "./index.css";
 import { Country } from "./components/Country";
-import CountryDetails from "./components/countryDetails.jsx";
 import React,{useEffect,useState} from "react";
 import { Link, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
@@ -25,7 +24,7 @@ function App() {
   <Routes>
     <Route exact path="/" element={<Country countries={countries} />}  />
 
-    <Route exact path="/:countryName" element={<CountryDetails countries={countries} />} />
+    <Route exact path="/:countryName" element={<Country countries={countries} />} />
        
       </Routes>
     </Router>

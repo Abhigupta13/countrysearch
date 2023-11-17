@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { Link, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Link, Route, BrowserRouter as Router, Routes, useLocation } from "react-router-dom";
 // import CountryDetails from "./countryDetails"
 import "./Style.css";
 
-export const Country = ({countries}) => {
+export const Country = ({countries,searchparam}) => {
   // const [countries, setCountry] = useState([]);
   const [data, setData] = useState([]);
   const [search, setsearch] = useState("");
@@ -19,6 +19,35 @@ export const Country = ({countries}) => {
     "Europe",
     "Oceania",
   ];
+  const location = useLocation();
+
+  useEffect(() => {
+    const fetchData = () => {
+      setIsLoading(true);
+
+      // Check if the route has a countryName parameter
+      if (location.pathname !== "/" && location.pathname !== "/") {
+        const countryName = location.pathname.substring(1);
+        const countryData = countries.find(
+          (c) => c.name.toLowerCase() === countryName.toLowerCase()
+        );
+
+        if (countryData) {
+          setData([countryData]);
+        } else {
+          setData([]);
+        }
+      } else {
+        // Fetch data when there's no specific countryName in the path
+        setData([]);
+      }
+
+      setIsLoading(false);
+    };
+
+    fetchData();
+  }, [location.pathname, countries]);
+
   const handlesearch = (countries) => {
     setselected("Filter By Region");
 
@@ -85,6 +114,7 @@ export const Country = ({countries}) => {
                 {data.length > 0
                   ? data.map((country, i) => {
                       return (
+                        
                         <Link
                           key={i}
                           to={`/${country.name.toLowerCase()}`}
@@ -127,25 +157,3 @@ export const Country = ({countries}) => {
   );
 };
 
-const CountryDetails = ({ countries }) => {
-  const countryName = window.location.pathname.substring(1);
-  const country = countries.find(
-    (c) => c.name.toLowerCase() === countryName.toLowerCase()
-  );
-
-  if (!country) {
-    return <div>Country not found</div>;
-  }
-
-  return (
-    <div>
-      <img src={country.flag} alt="" id="country_img" />
-                        <div id="textdiv">
-                          <h3>{country.name}</h3>
-                          <p>Population: {country.population}</p>
-                          <p>Region: {country.region}</p>
-                          <p>Capital: {country.capital}</p>
-                        </div>
-    </div>
-  );
-};
